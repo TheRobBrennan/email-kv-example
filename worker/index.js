@@ -16,14 +16,36 @@ export default {
     }
 
     try {
-      const { email } = await request.json();
+      const body = await request.json();
+      const { email, firstName, lastName } = body;
       
       if (!email) {
         return json({ error: 'Email required' }, 400);
       }
 
-      // Store in KV: key = email, value = timestamp
-      await env.EMAILS.put(email, new Date().toISOString());
+      // Get existing entry if any
+      const existing = await env.EMAILS.get(email);
+      let value;
+      
+      if (existing) {
+        // Merge: preserve original timestamp, update other fields
+        const parsed = JSON.parse(existing);
+        value = {
+          ...parsed,
+          ...(firstName && { firstName }),
+          ...(lastName && { lastName }),
+          updatedAt: new Date().toISOString(),
+        };
+      } else {
+        // New entry
+        value = {
+          timestamp: new Date().toISOString(),
+          ...(firstName && { firstName }),
+          ...(lastName && { lastName }),
+        };
+      }
+      
+      await env.EMAILS.put(email, JSON.stringify(value));
 
       return json({ message: 'Subscribed!' });
     } catch (err) {
