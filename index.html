@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Email Signup</title>
+</head>
+<body>
+    <h1>Get Notified</h1>
+    <input type="email" id="email" placeholder="Enter your email">
+    <button onclick="subscribe()">Notify Me</button>
+    <p id="message"></p>
+
+    <script>
+        // UPDATE THIS after deploying your worker
+        const WORKER_URL = 'https://email-worker.YOUR_SUBDOMAIN.workers.dev';
+
+        async function subscribe() {
+            const email = document.getElementById('email').value;
+            const msg = document.getElementById('message');
+            
+            try {
+                const res = await fetch(WORKER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                const data = await res.json();
+                msg.textContent = data.message || data.error;
+            } catch (err) {
+                msg.textContent = 'Error: ' + err.message;
+            }
+        }
+    </script>
+</body>
+</html>

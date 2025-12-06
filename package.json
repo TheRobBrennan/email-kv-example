@@ -1,0 +1,20 @@
+{
+  "name": "email-kv-example",
+  "version": "0.0.0",
+  "description": "An example demonstrating how to use Cloudflare so that a static HTML page can submit to a worker.",
+  "homepage": "https://github.com/TheRobBrennan/email-kv-example#readme",
+  "bugs": {
+    "url": "https://github.com/TheRobBrennan/email-kv-example/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheRobBrennan/email-kv-example.git"
+  },
+  "license": "MIT",
+  "author": "Rob Brennan <rob@sploosh.ai>",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
