@@ -92,26 +92,27 @@ Edit `index.html` and replace the `WORKER_URL` with your worker URL from step 5.
 
 ### 7. Deploy Static Site
 
-From the project root:
+First, create the Pages project with `main` as the production branch:
 
 ```bash
-wrangler pages deploy . --project-name=email-signup-site
+wrangler pages project create email-signup-site --production-branch=main
 ```
 
-If this is your first deployment, Wrangler will prompt you to create the project and specify a production branch.
+Then deploy from the project root:
+
+```bash
+wrangler pages deploy . --project-name=email-signup-site --branch=main
+```
 
 Example output:
 
 ```text
 ⛅️ wrangler 4.53.0
 ───────────────────
-✔ The project you specified does not exist: "email-signup-site". Would you like to create it? › Create a new project
-✔ Enter the production branch name: … main
-✨ Successfully created the 'email-signup-site' project.
-✨ Success! Uploaded 5 files (1.63 sec)
+✨ Success! Uploaded 13 files (1.56 sec)
 
 🌎 Deploying...
-✨ Deployment complete! Take a peek over at https://0f4f5528.email-signup-site.pages.dev
+✨ Deployment complete! Take a peek over at https://2ad393d8.email-signup-site.pages.dev
 ```
 
 Or upload `index.html` manually via Cloudflare Dashboard > Pages > Create Project > Direct Upload.
