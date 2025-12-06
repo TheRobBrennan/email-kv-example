@@ -1,5 +1,12 @@
 # Email Signup with Cloudflare KV
 
+A simple example demonstrating how to collect email signups using Cloudflare Workers and KV storage. Includes two form examples:
+
+**Live Demo:** <https://email-signup-site.pages.dev>
+
+1. **Simple Email Only** - Stores just the email as the key with a timestamp
+2. **Email + Name** - Stores email as the key with firstName, lastName, and timestamp as JSON value
+
 ## Project Structure
 
 ```text
@@ -112,7 +119,9 @@ Or upload `index.html` manually via Cloudflare Dashboard > Pages > Create Projec
 ## Testing
 
 1. Visit your Pages URL
-2. Enter an email and click "Notify Me"
+2. Try both forms:
+   - **Example 1**: Enter just an email and click "Notify Me"
+   - **Example 2**: Enter email, first name, and last name, then click "Sign Up"
 3. Check KV storage in Cloudflare Dashboard > Workers & Pages > KV > your namespace
 
 ## View Stored Emails
@@ -122,3 +131,40 @@ wrangler kv key list --namespace-id=YOUR_KV_NAMESPACE_ID
 ```
 
 > **Note:** Use `kv key` (with a space) instead of `kv:key` in Wrangler v4.
+
+To view a specific entry's value:
+
+```bash
+wrangler kv key get --namespace-id=YOUR_KV_NAMESPACE_ID "user@example.com"
+```
+
+## KV Data Structure
+
+The worker stores data with the email as the key and a JSON value:
+
+**New signup:**
+
+```json
+{
+  "timestamp": "2024-12-06T07:55:00.000Z",
+  "firstName": "John",
+  "lastName": "Doe"
+}
+```
+
+**After re-submitting (merge behavior):**
+
+```json
+{
+  "timestamp": "2024-12-06T07:55:00.000Z",
+  "firstName": "Jane",
+  "lastName": "Doe",
+  "updatedAt": "2024-12-06T08:30:00.000Z"
+}
+```
+
+The worker merges data on duplicate emails:
+
+- Preserves the original `timestamp`
+- Updates `firstName`/`lastName` if provided
+- Adds `updatedAt` to track the latest submission
