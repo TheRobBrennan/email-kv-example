@@ -28,13 +28,24 @@ wrangler login
 
 ```bash
 cd worker
-wrangler kv:namespace create "EMAILS"
+wrangler kv namespace create "EMAILS"
 ```
 
-This outputs something like:
+> **Note:** The command syntax changed in Wrangler v4. Use `kv namespace` (with a space) instead of `kv:namespace`.
+
+Example output:
 
 ```text
-{ binding = "EMAILS", id = "abc123..." }
+⛅️ wrangler 4.53.0
+───────────────────
+Resource location: remote
+
+🌀 Creating namespace with title "EMAILS"
+✨ Success!
+To access your new KV Namespace in your Worker, add the following snippet to your configuration file:
+[[kv_namespaces]]
+binding = "EMAILS"
+id = "69a23d3a9ff840ad9f00723d035707d6"
 ```
 
 ### 4. Update wrangler.toml
@@ -48,6 +59,24 @@ cd worker
 wrangler deploy
 ```
 
+If this is your first deployment, Wrangler will prompt you to create a workers.dev subdomain.
+
+Example output:
+
+```text
+⛅️ wrangler 4.53.0
+───────────────────
+Total Upload: 1.18 KiB / gzip: 0.57 KiB
+Your Worker has access to the following bindings:
+Binding                                            Resource
+env.EMAILS (69a23d3a9ff840ad9f00723d035707d6)      KV Namespace
+
+Uploaded email-worker (2.83 sec)
+Deployed email-worker triggers (39.64 sec)
+  https://email-worker.poos-ai.workers.dev
+Current Version ID: b7c760fc-6171-48b4-8850-3f5df1c19b20
+```
+
 Note the URL it outputs (e.g., `https://email-worker.your-subdomain.workers.dev`)
 
 ### 6. Update index.html
@@ -59,8 +88,23 @@ Edit `index.html` and replace the `WORKER_URL` with your worker URL from step 5.
 From the project root:
 
 ```bash
-cd ..
 wrangler pages deploy . --project-name=email-signup-site
+```
+
+If this is your first deployment, Wrangler will prompt you to create the project and specify a production branch.
+
+Example output:
+
+```text
+⛅️ wrangler 4.53.0
+───────────────────
+✔ The project you specified does not exist: "email-signup-site". Would you like to create it? › Create a new project
+✔ Enter the production branch name: … main
+✨ Successfully created the 'email-signup-site' project.
+✨ Success! Uploaded 5 files (1.63 sec)
+
+🌎 Deploying...
+✨ Deployment complete! Take a peek over at https://0f4f5528.email-signup-site.pages.dev
 ```
 
 Or upload `index.html` manually via Cloudflare Dashboard > Pages > Create Project > Direct Upload.
@@ -74,5 +118,7 @@ Or upload `index.html` manually via Cloudflare Dashboard > Pages > Create Projec
 ## View Stored Emails
 
 ```bash
-wrangler kv:key list --namespace-id=YOUR_KV_NAMESPACE_ID
+wrangler kv key list --namespace-id=YOUR_KV_NAMESPACE_ID
 ```
+
+> **Note:** Use `kv key` (with a space) instead of `kv:key` in Wrangler v4.
