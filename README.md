@@ -127,6 +127,12 @@ Or upload `index.html` manually via Cloudflare Dashboard > Pages > Create Projec
 ## View Stored Emails
 
 ```bash
+npm run kv:list
+```
+
+Or using wrangler directly:
+
+```bash
 wrangler kv key list --namespace-id=YOUR_KV_NAMESPACE_ID
 ```
 
