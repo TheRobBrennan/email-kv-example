@@ -3,26 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <title>Email Signup</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .form-section {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        .description {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        input {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 200px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #0070f3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #0051a8;
+        }
+        .message {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .message:not(:empty) {
+            background: #e8f5e9;
+        }
+    </style>
 </head>
 <body>
-    <h1>Get Notified</h1>
-    <input type="email" id="email" placeholder="Enter your email">
-    <button onclick="subscribe()">Notify Me</button>
-    <p id="message"></p>
+    <h1>Email Signup Examples</h1>
+
+    <!-- Example 1: Simple email only -->
+    <div class="form-section">
+        <h2>Example 1: Email Only</h2>
+        <p class="description">Simple signup with just an email address. Stores: <code>{ timestamp }</code></p>
+        <input type="email" id="email1" placeholder="Enter your email">
+        <button onclick="subscribeSimple()">Notify Me</button>
+        <p id="message1" class="message"></p>
+    </div>
+
+    <!-- Example 2: Email with additional fields -->
+    <div class="form-section">
+        <h2>Example 2: Email + Name</h2>
+        <p class="description">Signup with additional fields. Stores: <code>{ timestamp, firstName, lastName }</code></p>
+        <input type="email" id="email2" placeholder="Enter your email"><br>
+        <input type="text" id="firstName" placeholder="First Name"><br>
+        <input type="text" id="lastName" placeholder="Last Name">
+        <button onclick="subscribeWithName()">Sign Up</button>
+        <p id="message2" class="message"></p>
+    </div>
 
     <script>
         // UPDATE THIS after deploying your worker
-        const WORKER_URL = 'https://email-worker.YOUR_SUBDOMAIN.workers.dev';
+        const WORKER_URL = 'https://email-worker.poos-ai.workers.dev';
 
-        async function subscribe() {
-            const email = document.getElementById('email').value;
-            const msg = document.getElementById('message');
+        // Example 1: Simple email subscription
+        async function subscribeSimple() {
+            const email = document.getElementById('email1').value;
+            const msg = document.getElementById('message1');
             
             try {
                 const res = await fetch(WORKER_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email })
+                });
+                const data = await res.json();
+                msg.textContent = data.message || data.error;
+            } catch (err) {
+                msg.textContent = 'Error: ' + err.message;
+            }
+        }
+
+        // Example 2: Email with first/last name
+        async function subscribeWithName() {
+            const email = document.getElementById('email2').value;
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const msg = document.getElementById('message2');
+            
+            try {
+                const res = await fetch(WORKER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, firstName, lastName })
                 });
                 const data = await res.json();
                 msg.textContent = data.message || data.error;
